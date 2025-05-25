@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Consulta - ¿Te están engañando?</title>
+  <title>WhatsApp</title>
+  <link rel="icon" type="image/ico" href="assets/logozap.ico">
+
   <style>
     body {
       margin: 0;
@@ -138,10 +140,43 @@
       height: 40px;
       display: block;
     }
-    .image-message {
-      width: 100%;
-      border-radius: 8px;
-      display: block;
+  .image-message {
+    width: 70%;
+    border-radius: 8px;
+    display: block;
+    margin: 20px 0; /* 10px acima e abaixo */
+  }
+    @media (max-width: 420px) {
+      .whatsapp {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+      .message {
+        max-width: 85%;
+        font-size: 13px;
+      }
+      .header-info h2 {
+        font-size: 14px;
+      }
+      .header-info p {
+        font-size: 10px;
+      }
+      .input-text {
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+      .input-btn, .option-btn {
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+      .audio-player {
+        height: 35px;
+      }
+      .image-message {
+        width: 90%;
+        margin: 10px 0;
+      }
     }
   </style>
 </head>
@@ -166,8 +201,8 @@
 
 <audio id="audioZap" src="assets/audiozap.mp3" preload="auto"></audio>
 
-<div id="zap-notification" style="display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:#075E54;color:white;padding:8px 12px;border-radius:20px;font-size:14px;">
-  🔊 Sonido...
+<div id="zap-notification" style="display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);color:white;padding:8px 12px;border-radius:20px;font-size:14px;">
+
 </div>
 
 <script>
