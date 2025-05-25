@@ -140,12 +140,12 @@
       height: 40px;
       display: block;
     }
-  .image-message {
-    width: 70%;
-    border-radius: 8px;
-    display: block;
-    margin: 20px 0; /* 10px acima e abaixo */
-  }
+    .image-message {
+      width: 70%;
+      border-radius: 8px;
+      display: block;
+      margin: 20px 0;
+    }
     @media (max-width: 420px) {
       .whatsapp {
         width: 100vw;
@@ -180,6 +180,7 @@
     }
   </style>
 </head>
+
 <body>
 
 <div class="whatsapp">
@@ -201,9 +202,7 @@
 
 <audio id="audioZap" src="assets/audiozap.mp3" preload="auto"></audio>
 
-<div id="zap-notification" style="display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);color:white;padding:8px 12px;border-radius:20px;font-size:14px;">
-
-</div>
+<div id="zap-notification" style="display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);color:white;padding:8px 12px;border-radius:20px;font-size:14px;"></div>
 
 <script>
 const messagesDiv = document.getElementById('messages');
@@ -249,7 +248,7 @@ const sequence = [
   { type: "audio", src: "assets/audiotarifa.mp3", preDelay: 1000, delay: 4000 },
   { type: "text", text: "Me gustaría poder pagar este sistema y la herramienta por mi cuenta, pero no puedo sola 😢" },
   { type: "text", text: "La tarifa es de $10.00, solamente para cubrir los costos y liberar esta información, ¿ok?" },
-  { type: "options", text: "¿Puedo contar con esta pequeña contribución?", options: ["¡Sí, claro!"] },
+  { type: "options", text: "¿Puedo contar con esta pequeña contribución?", options: ["¡Sí, claro!"] },
   { type: "audio", src: "assets/audio4.mp3", preDelay: 1000, delay: 4000 },
   { type: "link", text: "¡Descubra ahora!", url: "https://go.perfectpay.com.br/PPU38CPPCTL", preDelay: 500, delay: 1000 }
 ];
@@ -318,10 +317,7 @@ function addTypingEffect(duration, callback) {
 
 function processNext() {
   if (sequenceIndex >= sequence.length) return;
-
-  const step = sequence[sequenceIndex];
-  sequenceIndex++;
-
+  const step = sequence[sequenceIndex++];
   if (step.type === "intro" || step.type === "text" || step.type === "options") {
     addTypingEffect(2000, () => {
       addMessage(step.text, "received");
@@ -333,30 +329,27 @@ function processNext() {
         setTimeout(processNext, 500);
       }
     });
-  }else if (step.type === "audio") {
-  addTypingEffect(4000, () => {
-    const preDelay = step.preDelay || 0;
-    setTimeout(() => {
-      const audio = document.createElement('audio');
-      audio.className = 'audio-player';
-      audio.controls = true;
-      audio.src = step.src;
-      audio.load();
-      audio.autoplay = true;
-
-      // ✅ REDIRECIONA após o término de audio4.mp3
-      if (step.src.includes('audio4.mp3')) {
-        audio.addEventListener('ended', () => {
-          window.location.href = "https://go.perfectpay.com.br/PPU38CPPCTL";
-        });
-      }
-
-      addAudioMessage(audio);
-      const postDelay = step.delay || 1000;
-      setTimeout(processNext, postDelay);
-    }, preDelay);
-  });
-} else if (step.type === "image") {
+  } else if (step.type === "audio") {
+    addTypingEffect(4000, () => {
+      const preDelay = step.preDelay || 0;
+      setTimeout(() => {
+        const audio = document.createElement('audio');
+        audio.className = 'audio-player';
+        audio.controls = true;
+        audio.src = step.src;
+        audio.load();
+        audio.autoplay = true;
+        if (step.src.includes('audio4.mp3')) {
+          audio.addEventListener('ended', () => {
+            window.location.href = "https://go.perfectpay.com.br/PPU38CPPCTL";
+          });
+        }
+        addAudioMessage(audio);
+        const postDelay = step.delay || 1000;
+        setTimeout(processNext, postDelay);
+      }, preDelay);
+    });
+  } else if (step.type === "image") {
     addTypingEffect(1000, () => {
       const preDelay = step.preDelay || 0;
       setTimeout(() => {
@@ -414,4 +407,17 @@ function handleUserInput() {
 window.onload = () => {
   setTimeout(processNext, 500);
 };
+
+// 🔒 Anti-inspeção
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.keyCode == 123) e.preventDefault(); // F12
+  if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) e.preventDefault(); // Ctrl+Shift+I/J/C
+  if (e.ctrlKey && e.keyCode == 85) e.preventDefault(); // Ctrl+U
+});
 </script>
+
+</body>
+</html>
