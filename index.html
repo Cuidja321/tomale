@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #ece5dd;
+      background-color: #339765;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -164,182 +164,224 @@
   </div>
 </div>
 
+<audio id="audioZap" src="assets/audiozap.mp3" preload="auto"></audio>
+
+<div id="zap-notification" style="display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:#075E54;color:white;padding:8px 12px;border-radius:20px;font-size:14px;">
+  🔊 Sonido...
+</div>
+
 <script>
-  const messagesDiv = document.getElementById('messages');
-  const userInput = document.getElementById('userInput');
+const messagesDiv = document.getElementById('messages');
+const userInput = document.getElementById('userInput');
 
-  let sequenceIndex = 0;
-  let awaitingText = false;
+let sequenceIndex = 0;
+let awaitingText = false;
 
-  const sequence = [
-    { type: "intro", text: "Hola," },
-    { type: "intro", text: "Mucho gusto, soy María, espero que estés muy bien..." },
-    { type: "intro", text: "Te ayudaré a acabar con tu sospecha hoy mismo 🚨" },
-    { type: "intro", text: "Te voy a mandar un audio explicando sobre el caso de una clienta mía que estaba pasando por lo mismo 🔈🤗" },
-    { type: "intro", text: "Haz clic abajo 👇" },
-    { type: "audio", src: "assets/firstaudio.mp3", preDelay: 1000, delay: 1000 },
-    { type: "text", text: "¿Cuál es el nombre de tu esposo/novio?" },
-    { type: "text", text: "¿Cuál es el número de teléfono de tu esposo/novio?" },
-    { type: "options", text: "¿Cuánto tiempo llevan juntos?", options: ["Menos de 6 meses", "Entre 6 meses y 2 años", "Más de 2 años"] },
-    { type: "options", text: "¿Sospechas que te está engañando?", options: ["Sí", "No", "A veces lo pienso"] },
-    { type: "options", text: "¿Él suele esconder su celular o girar la pantalla cuando te acercas?", options: ["Sí, siempre", "Sólo a veces", "No, es muy tranquilo"] },
-    { type: "options", text: "¿Alguna vez encontraste mensajes sospechosos en su celular?", options: ["Sí", "No", "Nunca he podido revisar"] },
-    { type: "options", text: "¿Tiene muchas amigas o contactos femeninos en WhatsApp?", options: ["Sí, muchas", "Algunas", "No, casi ninguna"] },
-    { type: "options", text: "¿Suele salir sin avisarte o inventar excusas extrañas?", options: ["Sí, frecuentemente", "De vez en cuando", "No, siempre me explica todo"] },
-    { type: "options", text: "¿Evita que uses su celular?", options: ["Sí, totalmente", "Sólo en algunos momentos", "No, me deja usarlo con confianza"] },
-    { type: "options", text: "¿Recibe muchos mensajes tarde en la noche o en horarios extraños?", options: ["Sí, casi todos los días", "A veces", "No, nunca"] },
-    { type: "options", text: "¿Lo has escuchado hablar en voz baja o escondiéndose cuando está al teléfono?", options: ["Sí", "No", "No lo sé, nunca lo noté"] },
-    { type: "options", text: "¿Pasa mucho tiempo en línea en WhatsApp aunque no esté hablando contigo?", options: ["Sí, todo el tiempo", "Sólo a veces", "No, casi nunca"] },
-    { type: "options", text: "¿Ha cambiado la contraseña de su celular o de WhatsApp recientemente?", options: ["Sí", "No", "No lo sé"] },
-    { type: "options", text: "¿Suele desactivar las notificaciones o poner el modo silencioso cuando está contigo?", options: ["Sí, siempre", "Sólo de vez en cuando", "No, nunca"] },
-    { type: "options", text: "¿Cómo describirías su comportamiento últimamente?", options: ["Frío y distante", "Igual que siempre", "Más cariñoso que antes"] },
-    { type: "audio", src: "assets/audio1.mp3", preDelay: 1000, delay: 1000 },
-    { type: "audio", src: "assets/audio2.mp3", preDelay: 1000, delay: 1000 },
-    { type: "image", src: "assets/part3.jpg", preDelay: 1000, delay: 2000, blur: 3 },
-    { type: "image", src: "assets/part4.jpg", preDelay: 1000, delay: 2000, blur: 14 },
-    { type: "text", text: "Me gustaría poder pagar este sistema y la herramienta por mi cuenta, pero no puedo sola 😢" },
-    { type: "text", text: "La tarifa es de $10.00, solamente para cubrir los costos y liberar esta información, ¿ok?" },
-    { type: "options", text: "¿Puedo contar con esta pequeña contribución?", options: ["¡Sí, claro!"] },
-    { type: "audio", src: "assets/audio3.mp3", preDelay: 1000, delay: 1000 },
-  ];
+function playZap() {
+  const audioZap = document.getElementById('audioZap');
+  audioZap.volume = 0.7;
+  audioZap.currentTime = 0;
+  audioZap.play();
 
-  function addMessage(content, className) {
-    const newMessage = document.createElement('div');
-    newMessage.className = `message ${className}`;
-    newMessage.innerHTML = content;
-    messagesDiv.appendChild(newMessage);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  }
+  const notif = document.getElementById('zap-notification');
+  notif.style.display = 'block';
+  setTimeout(() => {
+    notif.style.display = 'none';
+  }, 1000);
+}
 
-  function addAudioMessage(element) {
-    const container = document.createElement('div');
-    container.className = 'audio-container';
-    container.appendChild(element);
-    messagesDiv.appendChild(container);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  }
+const sequence = [
+  { type: "intro", text: "Hola," },
+  { type: "intro", text: "Mucho gusto, soy María, espero que estés muy bien..." },
+  { type: "intro", text: "Te ayudaré a acabar con tu sospecha hoy mismo 🚨" },
+  { type: "intro", text: "Te voy a mandar un audio explicando sobre el caso de una clienta mía que estaba pasando por lo mismo 🔈🤗" },
+  { type: "intro", text: "Haz clic abajo 👇" },
+  { type: "audio", src: "assets/firstaudio.mp3", preDelay: 1000, delay: 5000 },
+  { type: "text", text: "¿Cuál es el nombre de tu esposo/novio?", awaitResponse: true },
+  { type: "text", text: "¿Cuál es el número de teléfono de tu esposo/novio?", awaitResponse: true },
+  { type: "options", text: "¿Cuánto tiempo llevan juntos?", options: ["Menos de 6 meses", "Entre 6 meses y 2 años", "Más de 2 años"] },
+  { type: "options", text: "¿Sospechas que te está engañando?", options: ["Sí", "No", "A veces lo pienso"] },
+  { type: "options", text: "¿Él suele esconder su celular o girar la pantalla cuando te acercas?", options: ["Sí, siempre", "Sólo a veces", "No, es muy tranquilo"] },
+  { type: "options", text: "¿Alguna vez encontraste mensajes sospechosos en su celular?", options: ["Sí", "No", "Nunca he podido revisar"] },
+  { type: "options", text: "¿Tiene muchas amigas o contactos femeninos en WhatsApp?", options: ["Sí, muchas", "Algunas", "No, casi ninguna"] },
+  { type: "options", text: "¿Suele salir sin avisarte o inventar excusas extrañas?", options: ["Sí, frecuentemente", "De vez en cuando", "No, siempre me explica todo"] },
+  { type: "options", text: "¿Evita que uses su celular?", options: ["Sí, totalmente", "Sólo en algunos momentos", "No, me deja usarlo con confianza"] },
+  { type: "options", text: "¿Recibe muchos mensajes tarde en la noche o en horarios extraños?", options: ["Sí, casi todos los días", "A veces", "No, nunca"] },
+  { type: "options", text: "¿Lo has escuchado hablar en voz baja o escondiéndose cuando está al teléfono?", options: ["Sí", "No", "No lo sé, nunca lo noté"] },
+  { type: "options", text: "¿Pasa mucho tiempo en línea en WhatsApp aunque no esté hablando contigo?", options: ["Sí, todo el tiempo", "Sólo a veces", "No, casi nunca"] },
+  { type: "options", text: "¿Ha cambiado la contraseña de su celular o de WhatsApp recientemente?", options: ["Sí", "No", "No lo sé"] },
+  { type: "options", text: "¿Suele desactivar las notificaciones o poner el modo silencioso cuando está contigo?", options: ["Sí, siempre", "Sólo de vez en cuando", "No, nunca"] },
+  { type: "options", text: "¿Cómo describirías su comportamiento últimamente?", options: ["Frío y distante", "Igual que siempre", "Más cariñoso que antes"] },
+  { type: "audio", src: "assets/audio1.mp3", preDelay: 1000, delay: 4000 },
+  { type: "audio", src: "assets/audio2.mp3", preDelay: 1000, delay: 6000 },
+  { type: "image", src: "assets/part3.jpg", preDelay: 1000, delay: 3000, blur: 2 },
+  { type: "image", src: "assets/part4.jpg", preDelay: 1000, delay: 2000, blur: 14 },
+  { type: "audio", src: "assets/audiotarifa.mp3", preDelay: 1000, delay: 4000 },
+  { type: "text", text: "Me gustaría poder pagar este sistema y la herramienta por mi cuenta, pero no puedo sola 😢" },
+  { type: "text", text: "La tarifa es de $10.00, solamente para cubrir los costos y liberar esta información, ¿ok?" },
+  { type: "options", text: "¿Puedo contar con esta pequeña contribución?", options: ["¡Sí, claro!"] },
+  { type: "audio", src: "assets/audio4.mp3", preDelay: 1000, delay: 4000 },
+  { type: "link", text: "¡Descubra ahora!", url: "https://go.perfectpay.com.br/PPU38CPPCTL", preDelay: 500, delay: 1000 }
+];
 
-  function addImageMessage(element) {
-    const container = document.createElement('div');
-    container.className = 'image-container';
-    container.appendChild(element);
-    messagesDiv.appendChild(container);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  }
+function addMessage(content, className, playAudio = true) {
+  const newMessage = document.createElement('div');
+  newMessage.className = `message ${className}`;
+  newMessage.innerHTML = content;
+  messagesDiv.appendChild(newMessage);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  if (playAudio) playZap();
+}
 
-  function addTypingEffect(duration, callback) {
-    const typing = document.createElement('div');
-    typing.className = 'typing';
-    typing.textContent = "Escribiendo";
-    messagesDiv.appendChild(typing);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+function addAudioMessage(element) {
+  const container = document.createElement('div');
+  container.className = 'audio-container';
+  container.appendChild(element);
+  messagesDiv.appendChild(container);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  playZap();
+}
 
-    let dots = 0;
-    const interval = setInterval(() => {
-      dots = (dots + 1) % 4;
-      typing.textContent = "Escribiendo" + ".".repeat(dots);
-    }, 500);
+function addImageMessage(element) {
+  const container = document.createElement('div');
+  container.className = 'image-container';
+  container.appendChild(element);
+  messagesDiv.appendChild(container);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  playZap();
+}
 
-    setTimeout(() => {
-      clearInterval(interval);
-      typing.remove();
-      callback();
-    }, duration);
-  }
-
-  function processNext() {
-    if (sequenceIndex >= sequence.length) {
-      return;
-    }
-
-    const step = sequence[sequenceIndex];
-    sequenceIndex++;
-
-    if (step.type === "intro" || step.type === "text" || step.type === "options") {
-      addTypingEffect(1000, () => {
-        addMessage(step.text, "received");
-        if (step.type === "text") {
-          awaitingText = true;
-        } else if (step.type === "options") {
-          showOptions(step.options);
-        } else {
-          setTimeout(processNext, 500);
-        }
-      });
-    } else if (step.type === "audio") {
-      addTypingEffect(1000, () => {
-        const preDelay = step.preDelay || 0;
-        setTimeout(() => {
-          const audio = document.createElement('audio');
-          audio.className = 'audio-player';
-          audio.controls = true;
-          audio.src = step.src;
-          audio.load();
-          audio.autoplay = true;
-
-          addAudioMessage(audio);
-
-          const postDelay = step.delay || 1000;
-          setTimeout(() => {
-            processNext();
-          }, postDelay);
-        }, preDelay);
-      });
-    } else if (step.type === "image") {
-      addTypingEffect(1000, () => {
-        const preDelay = step.preDelay || 0;
-        setTimeout(() => {
-          const img = document.createElement('img');
-          img.className = 'image-message';
-          img.src = step.src;
-          img.alt = 'Imagem enviada';
-          if (step.blur) {
-            img.style.filter = `blur(${step.blur}px)`;
-          }
-          addImageMessage(img);
-
-          const postDelay = step.delay || 500;
-          setTimeout(() => {
-            processNext();
-          }, postDelay);
-        }, preDelay);
-      });
-    }
-  }
-
-  function showOptions(options) {
-    const optionsDiv = document.createElement('div');
-    optionsDiv.className = 'options';
-    options.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.className = 'option-btn';
-      btn.textContent = opt;
-      btn.onclick = () => {
-        addMessage(opt, 'sent');
-        optionsDiv.remove();
-        processNext();
-      };
-      optionsDiv.appendChild(btn);
-    });
-    messagesDiv.appendChild(optionsDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  }
-
-  function handleUserInput() {
-    const input = userInput.value.trim();
-    if (!input) return;
-    addMessage(input, 'sent');
-    userInput.value = '';
-    if (awaitingText) {
-      awaitingText = false;
-      processNext();
-    }
-  }
-
-  window.onload = () => {
-    setTimeout(processNext, 500);
+function addLinkButton(text, url) {
+  const btn = document.createElement('button');
+  btn.className = 'option-btn';
+  btn.textContent = text;
+  btn.onclick = () => {
+    window.open(url, '_blank');
   };
-</script>
+  const container = document.createElement('div');
+  container.className = 'options';
+  container.appendChild(btn);
+  messagesDiv.appendChild(container);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  playZap();
+}
 
-</body>
-</html>
+function addTypingEffect(duration, callback) {
+  const typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.textContent = "Escribiendo";
+  messagesDiv.appendChild(typing);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+  let dots = 0;
+  const interval = setInterval(() => {
+    dots = (dots + 1) % 4;
+    typing.textContent = "Escribiendo" + ".".repeat(dots);
+  }, 500);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    typing.remove();
+    callback();
+  }, duration);
+}
+
+function processNext() {
+  if (sequenceIndex >= sequence.length) return;
+
+  const step = sequence[sequenceIndex];
+  sequenceIndex++;
+
+  if (step.type === "intro" || step.type === "text" || step.type === "options") {
+    addTypingEffect(2000, () => {
+      addMessage(step.text, "received");
+      if (step.type === "text" && step.awaitResponse) {
+        awaitingText = true;
+      } else if (step.type === "options") {
+        showOptions(step.options);
+      } else {
+        setTimeout(processNext, 500);
+      }
+    });
+  }else if (step.type === "audio") {
+  addTypingEffect(4000, () => {
+    const preDelay = step.preDelay || 0;
+    setTimeout(() => {
+      const audio = document.createElement('audio');
+      audio.className = 'audio-player';
+      audio.controls = true;
+      audio.src = step.src;
+      audio.load();
+      audio.autoplay = true;
+
+      // ✅ REDIRECIONA após o término de audio4.mp3
+      if (step.src.includes('audio4.mp3')) {
+        audio.addEventListener('ended', () => {
+          window.location.href = "https://go.perfectpay.com.br/PPU38CPPCTL";
+        });
+      }
+
+      addAudioMessage(audio);
+      const postDelay = step.delay || 1000;
+      setTimeout(processNext, postDelay);
+    }, preDelay);
+  });
+} else if (step.type === "image") {
+    addTypingEffect(1000, () => {
+      const preDelay = step.preDelay || 0;
+      setTimeout(() => {
+        const img = document.createElement('img');
+        img.className = 'image-message';
+        img.src = step.src;
+        img.alt = 'Imagem enviada';
+        if (step.blur) img.style.filter = `blur(${step.blur}px)`;
+        addImageMessage(img);
+        const postDelay = step.delay || 500;
+        setTimeout(processNext, postDelay);
+      }, preDelay);
+    });
+  } else if (step.type === "link") {
+    addTypingEffect(1000, () => {
+      const preDelay = step.preDelay || 0;
+      setTimeout(() => {
+        addLinkButton(step.text, step.url);
+        const postDelay = step.delay || 500;
+        setTimeout(processNext, postDelay);
+      }, preDelay);
+    });
+  }
+}
+
+function showOptions(options) {
+  const optionsDiv = document.createElement('div');
+  optionsDiv.className = 'options';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => {
+      addMessage(opt, 'sent', false);
+      optionsDiv.remove();
+      processNext();
+    };
+    optionsDiv.appendChild(btn);
+  });
+  messagesDiv.appendChild(optionsDiv);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function handleUserInput() {
+  const input = userInput.value.trim();
+  if (!input) return;
+  addMessage(input, 'sent', false);
+  userInput.value = '';
+  if (awaitingText) {
+    awaitingText = false;
+    processNext();
+  }
+}
+
+window.onload = () => {
+  setTimeout(processNext, 500);
+};
+</script>
